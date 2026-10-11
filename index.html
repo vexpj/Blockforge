@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06100e">
+<title>Blockforge</title>
+<style>
+:root{--g:#34d399;--c:#22d3ee;--tx:#f1f5f9;--mu:rgba(241,245,249,.55)}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%;overflow-x:hidden;background:#06100e;color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left)}
+.bg{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,#06100e,#08161a 60%,#0a1220)}
+.bl{position:absolute;border-radius:50%;will-change:transform;animation:fl 18s ease-in-out infinite alternate}
+.b1{width:340px;height:340px;left:-120px;top:-60px;background:radial-gradient(circle,rgba(52,211,153,.4),transparent 68%)}
+.b2{width:380px;height:380px;right:-160px;top:32%;background:radial-gradient(circle,rgba(34,211,238,.3),transparent 68%);animation-duration:24s}
+.b3{width:320px;height:320px;left:-40px;bottom:-120px;background:radial-gradient(circle,rgba(129,140,248,.28),transparent 68%);animation-duration:21s}
+@keyframes fl{to{transform:translate3d(40px,60px,0)}}
+.app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:auto}
+header{display:flex;align-items:center;gap:10px;padding:14px 20px 0;font-weight:800;font-size:18px;letter-spacing:.2px}
+.logo{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--g),var(--c));box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset -3px -3px 0 rgba(0,0,0,.18)}
+#pager{flex:1;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+#pager::-webkit-scrollbar{display:none}
+.pane{min-width:100%;scroll-snap-align:center;overflow-y:auto;overflow-x:hidden;padding:18px 20px calc(110px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;align-content:flex-start}
+h1{font-size:30px;line-height:1.1;font-weight:800}
+.sub{color:var(--mu);font-size:14px;margin-top:4px}
+h3{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-top:10px}
+.glass{border:1px solid rgba(255,255,255,.13);border-radius:24px;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.03) 45%),rgba(255,255,255,.04);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 10px 30px rgba(0,0,0,.35)}
+@supports not (backdrop-filter:blur(1px)){.glass{background:rgba(16,28,30,.94)}}
+.card{padding:16px;display:flex;gap:14px;align-items:center;content-visibility:auto;contain-intrinsic-size:0 84px;animation:rise .4s cubic-bezier(.2,.8,.2,1) both;transition:transform .15s}
+.tap{cursor:pointer}.tap:active{transform:scale3d(.98,.98,1)}
+@keyframes rise{from{opacity:0;transform:translate3d(0,14px,0)}to{opacity:1;transform:none}}
+.name{font-size:20px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grow{flex:1;min-width:0}.t{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s{font-size:13px;color:var(--mu)}
+.d{font-size:14px;color:var(--mu);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:2px 0 8px}
+.btn,.chip,.ib{min-height:44px;min-width:44px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.1);color:inherit;font:inherit;font-weight:600;cursor:pointer;touch-action:manipulation;transition:transform .15s;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap}
+.btn{padding:0 20px;border-radius:18px}.chip{padding:0 16px;border-radius:99px;font-size:14px}.ib{border-radius:50%;padding:0}
+.btn:active,.chip:active,.ib:active,nav button:active{transform:scale3d(.94,.94,1)}
+.primary{background:linear-gradient(135deg,var(--g),var(--c));color:#04120e;border-color:transparent;box-shadow:0 6px 20px rgba(52,211,153,.3)}
+.chip.on{background:linear-gradient(135deg,var(--g),var(--c));color:#04120e;border-color:transparent}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -20px;padding:0 20px;scroll-snap-type:x proximity}
+.chips::-webkit-scrollbar{display:none}.chip{scroll-snap-align:start}
+.ib.on{color:#fbbf24}svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.08);object-fit:cover;flex:none}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tag{font-size:12px;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.1);color:var(--mu)}
+input{width:100%;min-height:48px;padding:0 16px;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.28);color:inherit;font:inherit;outline:none}
+input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(52,211,153,.2)}
+.col{flex-direction:column;align-items:stretch;gap:12px}.err{color:#fca5a5;font-size:14px}
+.link{background:none;border:0;color:var(--mu);font-weight:500}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 14px);width:min(360px,calc(100% - 32px));display:flex;padding:6px;gap:4px;border-radius:99px}
+nav button{flex:1;min-height:48px;border:0;border-radius:99px;background:none;color:var(--mu);font:inherit;font-size:12px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:transform .15s,background .2s,color .2s}
+nav button svg{width:20px;height:20px}
+nav button.on{background:rgba(255,255,255,.14);color:#fff}
+#toast{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:50%;transform:translate3d(-50%,-90px,0);padding:10px 20px;border-radius:99px;transition:transform .25s;z-index:9;font-size:14px;font-weight:600}
+#toast.show{transform:translate3d(-50%,0,0)}
+@media (min-width:600px) and (max-width:859px){.app{max-width:640px}}
+@media (min-width:860px){
+.app{max-width:1200px;display:grid;grid-template-columns:240px 1fr;grid-template-rows:auto 1fr;padding:0 16px}
+header{grid-column:1;grid-row:1;padding:28px 12px 8px;font-size:22px}
+nav{grid-column:1;grid-row:2;position:static;transform:none;width:auto;flex-direction:column;align-self:start;margin:12px 0 0;padding:8px;border-radius:24px;gap:4px}
+nav button{flex:none;flex-direction:row;justify-content:flex-start;gap:12px;padding:0 16px;min-height:48px;font-size:15px;border-radius:16px;cursor:pointer}
+nav button:not(.on):hover{background:rgba(255,255,255,.08);color:#fff}
+#pager{grid-column:2;grid-row:1/3;overflow-x:hidden;scroll-snap-type:none}
+.pane{padding:32px 24px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;align-content:start}
+.pane>:not(.card){grid-column:1/-1}
+.pane>.btn{justify-self:start}
+h1{font-size:38px}
+.sub{font-size:15px}
+.chips{flex-wrap:wrap;margin:0;padding:0;overflow:visible}
+.tap:hover{transform:translate3d(0,-2px,0)}
+.btn:not(.primary):hover,.chip:not(.on):hover,.ib:hover{background:rgba(255,255,255,.18)}
+.primary:hover{filter:brightness(1.08)}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"><i class="bl b1"></i><i class="bl b2"></i><i class="bl b3"></i></div>
+<div id="toast" class="glass"></div>
+<div class="app">
+  <header><i class="logo"></i>Blockforge</header>
+  <main id="pager">
+    <section class="pane" id="p0"></section>
+    <section class="pane" id="p1"></section>
+    <section class="pane" id="p2"></section>
+  </main>
+  <nav class="glass" id="nav"></nav>
+</div>
+<script>
+/* ====== НАСТРОЙКИ ====== */
+const API_URL = 'https://script.google.com/macros/s/AKfycbwnKOxtiv6Pe2mE0FzCdVo5qTOEshheEmZ_DX9Xivbx7rhL2TPlsjYaXJBhanXoUVk53A/exec'; // https://script.google.com/macros/s/.../exec
+/* ======================= */
+const THEMES = {
+  'dark-fantasy':{t:'Dark Fantasy',a:['Shadow','Ashen','Cursed','Obsidian','Hollow','Grim'],b:['Realm','Crown','Abyss','Throne','Covenant','Eclipse'],q:['mmoitems','custom mobs','dungeon']},
+  'smp':{t:'Vanilla / СМП',a:['Cozy','Pure','Wild','Echo','Maple','Origin'],b:['SMP','Valley','Haven','Craft','Lands','Hearth'],q:['essentials','luckperms','coreprotect']},
+  'anarchy':{t:'Анархия',a:['Chaos','Rogue','Void','Rust','Outlaw','Feral'],b:['Anarchy','Wasteland','Rift','Zero','Frontier','Mayhem'],q:['anticheat','anarchy','lag']},
+  'br':{t:'Battle Royale',a:['Last','Final','Storm','Drop','Apex','Blitz'],b:['Royale','Zone','Arena','Circle','Survivors','Standoff'],q:['battle royale','minigames','worldborder']},
+  'grief':{t:'Гриф',a:['Raid','Breaker','Wreck','Toxic','Sabotage','Havoc'],b:['Grief','Hunt','Siege','Clash','Wars','Ruin'],q:['claims','rollback','protection']},
+  'rpg':{t:'RPG',a:['Eternal','Arcane','Mythic','Ember','Rune','Legend'],b:['Quest','Chronicles','Guild','Saga','Odyssey','Kingdoms'],q:['quests','skills','mythicmobs']},
+  'skyblock':{t:'SkyBlock',a:['Sky','Cloud','Floating','Aero','Nimbus','Stratos'],b:['Block','Islands','Realm','Isles','Drift','Summit'],q:['skyblock','island','oneblock']},
+};
+const IC = {
+  spark:'<svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18"/></svg>',
+  grid:'<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>',
+  user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>',
+  copy:'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>',
+  dl:'<svg viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>',
+};
+const star = (on) => `<svg viewBox="0 0 24 24" ${on ? 'style="fill:currentColor"' : ''}><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></svg>`;
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pick = (a) => a[Math.floor(Math.random() * a.length)];
+const safeUrl = (u) => (/^https:\/\//.test(u || '') ? u : '#');
+const fmt = (n) => (n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e3 ? Math.round(n / 1e3) + 'K' : n || 0);
+
+let token = localStorage.getItem('t') || '', user = null, fav = {names: [], plugins: []};
+let nt = 'dark-fantasy', names = [], pt = 'smp', plist = [], pLoading = false, mode = 'login', authErr = '';
+
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.i); toast.i = setTimeout(() => t.classList.remove('show'), 1500); }
+async function api(action, data = {}) {
+  if (!/^https:/.test(API_URL)) return {error: 'Не указан API_URL в index.html'};
+  try { const r = await fetch(API_URL, {method: 'POST', body: JSON.stringify({action, token, ...data})}); return await r.json(); }
+  catch { return {error: 'Нет связи с сервером'}; }
+}
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); }
+  catch { const t = Object.assign(document.createElement('textarea'), {value: text}); document.body.append(t); t.select(); document.execCommand('copy'); t.remove(); }
+}
+const chips = (cur, a) => `<div class="chips">${Object.entries(THEMES).map(([k, v]) => `<button class="chip ${k === cur ? 'on' : ''}" data-a="${a}" data-v="${k}">${v.t}</button>`).join('')}</div>`;
+
+/* ---------- Названия ---------- */
+function roll() { const T = THEMES[nt], s = new Set(); while (s.size < 8) s.add(pick(T.a) + pick(T.b)); names = [...s]; renderNames(); }
+function renderNames() {
+  $('#p0').innerHTML = `<div><h1>Названия</h1><p class="sub">Тапни по карточке, чтобы скопировать</p></div>${chips(nt, 'nt')}
+  <button class="btn primary" data-a="roll">Сгенерировать ещё</button>
+  ${names.map((n) => `<div class="glass card tap" data-a="copy" data-v="${esc(n)}"><div class="grow"><div class="name">${esc(n)}</div><div class="s">${THEMES[nt].t}</div></div><button class="ib ${fav.names.some((f) => f.name === n) ? 'on' : ''}" data-a="favn" data-v="${esc(n)}" aria-label="В избранное">${star(fav.names.some((f) => f.name === n))}</button></div>`).join('')}`;
+}
+
+/* ---------- Плагины ---------- */
+async function modrinth(q) {
+  const f = encodeURIComponent(JSON.stringify([['project_type:plugin'], ['categories:paper', 'categories:spigot', 'categories:bukkit']]));
+  const r = await fetch(`https://api.modrinth.com/v2/search?query=${encodeURIComponent(q)}&facets=${f}&limit=6&index=downloads`);
+  const {hits} = await r.json();
+  return hits.map((h) => ({source: 'modrinth', slug: h.slug, title: h.title, description: h.description, icon: h.icon_url, downloads: h.downloads, url: 'https://modrinth.com/plugin/' + h.slug}));
+}
+async function loadPlugins() {
+  const key = 'pl:' + pt, c = sessionStorage.getItem(key);
+  if (c) { plist = JSON.parse(c); return renderPlugins(); }
+  pLoading = true; renderPlugins();
+  const res = await Promise.allSettled(THEMES[pt].q.flatMap((q) => [modrinth(q), api('cf', {q}).then((d) => d.items || [])]));
+  const seen = new Set();
+  plist = res.filter((x) => x.status === 'fulfilled').flatMap((x) => x.value)
+    .filter((p) => { const k = p.title.toLowerCase(); return !seen.has(k) && seen.add(k); })
+    .sort((a, b) => b.downloads - a.downloads).slice(0, 24);
+  if (plist.length) sessionStorage.setItem(key, JSON.stringify(plist));
+  pLoading = false; renderPlugins();
+}
+function renderPlugins() {
+  $('#p1').innerHTML = `<div><h1>Плагины</h1><p class="sub">Популярные плагины под тематику сервера</p></div>${chips(pt, 'pt')}
+  ${pLoading ? '<div class="s">Загрузка…</div>' : ''}
+  ${plist.map((p, i) => `<div class="glass card" style="align-items:flex-start"><img class="ic" src="${esc(safeUrl(p.icon))}" alt="" loading="lazy" width="52" height="52"><div class="grow"><div class="t">${esc(p.title)}</div><div class="d">${esc(p.description)}</div><div class="row"><a class="btn primary" style="min-height:44px;padding:0 16px;font-size:14px" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener">${IC.dl}&nbsp;Скачать</a><button class="ib ${fav.plugins.some((f) => f.slug === p.slug) ? 'on' : ''}" data-a="favp" data-v="${i}" aria-label="В избранное">${star(fav.plugins.some((f) => f.slug === p.slug))}</button><span class="tag">${esc(p.source)} · ${fmt(p.downloads)}</span></div></div></div>`).join('')}`;
+}
+
+/* ---------- Профиль ---------- */
+function renderProfile() {
+  const head = '<div><h1>Профиль</h1><p class="sub">Избранное хранится в твоём аккаунте</p></div>';
+  if (user) {
+    $('#p2').innerHTML = `${head}<div class="glass card"><div class="grow"><div class="name">${esc(user)}</div><div class="s">Вы вошли</div></div><button class="btn" data-a="logout">Выйти</button></div>
+    <h3>Названия</h3>${fav.names.map((n) => `<div class="glass card tap" data-a="copy" data-v="${esc(n.name)}"><div class="name grow">${esc(n.name)}</div><span class="ib" style="border:0;background:none">${IC.copy}</span></div>`).join('') || '<div class="s">Пока пусто</div>'}
+    <h3>Плагины</h3>${fav.plugins.map((p) => `<div class="glass card"><div class="t grow">${esc(p.title)}</div><a class="btn" style="padding:0 16px;font-size:14px" href="${esc(safeUrl(p.url))}" target="_blank" rel="noopener">Открыть</a></div>`).join('') || '<div class="s">Пока пусто</div>'}`;
+  } else {
+    $('#p2').innerHTML = `${head}<div class="glass card col"><input id="u" placeholder="Логин" autocomplete="username" autocapitalize="off"><input id="pw" type="password" placeholder="Пароль" autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}">${authErr ? `<div class="err">${esc(authErr)}</div>` : ''}<button class="btn primary" data-a="auth">${mode === 'login' ? 'Войти' : 'Создать аккаунт'}</button><button class="btn link" data-a="mode">${mode === 'login' ? 'Нет аккаунта? Регистрация' : 'Есть аккаунт? Войти'}</button></div>`;
+  }
+}
+async function loadFav() { const d = await api('fav'); if (!d.error) fav = d; renderProfile(); renderNames(); renderPlugins(); }
+async function init() {
+  if (token) { const d = await api('me'); if (d.username) { user = d.username; await loadFav(); } else { token = ''; localStorage.removeItem('t'); } }
+  renderProfile();
+}
+
+/* ---------- События ---------- */
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  const a = b.dataset.a, v = b.dataset.v;
+  if (a === 'nt') { nt = v; roll(); }
+  else if (a === 'roll') roll();
+  else if (a === 'copy') { await copy(v); toast('Скопировано'); }
+  else if (a === 'pt') { pt = v; loadPlugins(); }
+  else if (a === 'mode') { mode = mode === 'login' ? 'register' : 'login'; authErr = ''; renderProfile(); }
+  else if (a === 'logout') { await api('logout'); token = ''; user = null; fav = {names: [], plugins: []}; localStorage.removeItem('t'); renderProfile(); renderNames(); renderPlugins(); }
+  else if (a === 'auth') {
+    const d = await api(mode, {username: $('#u').value, password: $('#pw').value});
+    if (d.error) { authErr = d.error; renderProfile(); return; }
+    token = d.token; user = d.username; localStorage.setItem('t', token); authErr = ''; await loadFav();
+  }
+  else if (a === 'favn' || a === 'favp') {
+    if (!user) { toast('Войдите в профиль'); go(2); return; }
+    if (a === 'favn') { if (fav.names.some((f) => f.name === v)) return toast('Уже в избранном'); fav.names.push({name: v, theme: nt}); renderNames(); await api('addName', {name: v, theme: nt}); }
+    else { const p = plist[+v]; if (fav.plugins.some((f) => f.slug === p.slug)) return toast('Уже в избранном'); fav.plugins.push(p); renderPlugins(); await api('addPlugin', {plugin: p}); }
+    toast('Сохранено в избранное'); renderProfile();
+  }
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches('#pw')) document.querySelector('[data-a=auth]').click(); });
+
+/* ---------- Навигация (scroll-snap) ---------- */
+const TABS = [['Названия', IC.spark], ['Плагины', IC.grid], ['Профиль', IC.user]], pager = $('#pager');
+$('#nav').innerHTML = TABS.map(([t, i], n) => `<button data-i="${n}">${i}${t}</button>`).join('');
+function go(i) { pager.scrollTo({left: i * pager.clientWidth, behavior: 'smooth'}); }
+$('#nav').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) go(+b.dataset.i); });
+const io = new IntersectionObserver((es) => es.forEach((e) => {
+  if (!e.isIntersecting) return;
+  const i = [...pager.children].indexOf(e.target);
+  document.querySelectorAll('#nav button').forEach((b, j) => b.classList.toggle('on', i === j));
+  if (i === 1 && !plist.length && !pLoading) loadPlugins();
+}), {root: pager, threshold: 0.6});
+[...pager.children].forEach((p) => io.observe(p));
+
+roll(); init();
+</script>
+</body>
+</html>
